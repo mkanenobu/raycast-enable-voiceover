@@ -1,6 +1,7 @@
-import { showHUD } from "@raycast/api";
-import { exec } from "node:child_process"
+import { showToast } from "@raycast/api";
+import { exec } from "node:child_process";
 import { promisify } from "node:util";
+import { showFailureToast } from "@raycast/utils";
 
 const execAsync = promisify(exec);
 
@@ -11,11 +12,11 @@ const enableVoiceOver = async () => {
 };
 
 const main = async () => {
-  const out = await enableVoiceOver();
-  if (out.stderr) {
-    await showHUD("Error enabling VoiceOver: " + out.stderr);
-  } else {
-    await showHUD("VoiceOver enabled");
+  try {
+    await enableVoiceOver();
+    await showToast({ title: "VoiceOver enabled" });
+  } catch (err) {
+    await showFailureToast(`Error enabling VoiceOver: ${err}`);
   }
-}
+};
 export default main;
